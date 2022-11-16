@@ -205,19 +205,27 @@ There are some issues with Safari versions lower than 13:
 There is no plan for any further work on this since the breaking code belongs to third party
 libraries.
 
-# Help
+## Help
 
 Help is underway! ... and can be viewed [here](https://cpvalente.gitbook.io/ontime/)
 
-# License
+## License
 
 This project is licensed under the terms of the GNU GPL v3
 
+## Contributors
+This project is made great by the continued support of its community.
 
-# Contributors
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
 
+<!-- markdownlint-restore -->
+<!-- prettier-ignore-end -->
 
-# Support
+<!-- ALL-CONTRIBUTORS-LIST:END -->
+
+## Support
 This project is supported by JetBrains as part of the Open Source program
 
 ![JetBrains Logo (Main) logo](https://resources.jetbrains.com/storage/products/company/brand/logos/jb_beam.svg)
