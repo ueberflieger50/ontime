@@ -212,3 +212,12 @@ Help is underway! ... and can be viewed [here](https://cpvalente.gitbook.io/onti
 # License
 
 This project is licensed under the terms of the GNU GPL v3
+
+
+# Contributors
+
+
+# Support
+This project is supported by JetBrains as part of the Open Source program
+
+![JetBrains Logo (Main) logo](https://resources.jetbrains.com/storage/products/company/brand/logos/jb_beam.svg)
