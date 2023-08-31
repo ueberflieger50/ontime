@@ -1,4 +1,5 @@
 import { sentryVitePlugin } from '@sentry/vite-plugin';
+import legacy from '@vitejs/plugin-legacy';
 import react from '@vitejs/plugin-react';
 import { fileURLToPath, URL } from 'node:url';
 import { defineConfig } from 'vite';
@@ -14,6 +15,9 @@ export default defineConfig({
   plugins: [
     react(),
     svgrPlugin(),
+    legacy({
+      targets: ['chrome 71'],
+    }),
     !isLocal &&
       sentryVitePlugin({
         org: 'get-ontime',
@@ -38,6 +42,7 @@ export default defineConfig({
   build: {
     outDir: './build',
     sourcemap: true,
+    target: 'es2015',
   },
   resolve: {
     alias: {
