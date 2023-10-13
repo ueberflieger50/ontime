@@ -29,6 +29,7 @@ import { logger } from '../../classes/Logger.js';
 import { validateEvent } from '../../utils/parser.js';
 import { clock } from '../Clock.js';
 
+import { SheetAddEvent, SheetEditEvent, SheetDeleteEvent, SheetReorderEvent, SheetDeleteAllEvents } from '../../utils/SheetsAdapter.js';
 /**
  * Forces rundown to be recalculated
  * To be used when we know the rundown has changed completely
@@ -189,6 +190,7 @@ export async function addEvent(eventData: Partial<OntimeEvent> | Partial<OntimeD
   delete eventData.after;
 
   // modify rundown
+  SheetAddEvent(newEvent as OntimeEvent, insertIndex);
   await cachedAdd(insertIndex, newEvent as OntimeEvent | OntimeDelay | OntimeBlock);
 
   notifyChanges({ timer: [id], external: true });
@@ -205,6 +207,11 @@ export async function editEvent(eventData: Partial<OntimeEvent> | Partial<Ontime
   }
 
   const newEvent = await cachedEdit(eventData.id, eventData);
+  const index = DataProvider.getIndexOf(newEvent.id);
+  if (index < 0) {
+    logger.warning(LogOrigin.Server, `Could not find event with id ${eventData.after}`);
+  }
+  SheetEditEvent(newEvent as OntimeEvent, index);
 
   notifyChanges({ timer: [newEvent.id], external: true });
 
@@ -217,6 +224,8 @@ export async function editEvent(eventData: Partial<OntimeEvent> | Partial<Ontime
  * @returns {Promise<void>}
  */
 export async function deleteEvent(eventId) {
+  const index = DataProvider.getIndexOf(eventId);
+  SheetDeleteEvent(index);
   await cachedDelete(eventId);
 
   notifyChanges({ timer: [eventId], external: true });
@@ -229,6 +238,7 @@ export async function deleteEvent(eventId) {
  * @returns {Promise<void>}
  */
 export async function deleteAllEvents() {
+  SheetDeleteAllEvents()
   await cachedClear();
 
   notifyChanges({ timer: true, external: true, reset: true });
@@ -242,6 +252,7 @@ export async function deleteAllEvents() {
  * @returns {Promise<void>}
  */
 export async function reorderEvent(eventId: string, from: number, to: number) {
+  SheetReorderEvent(from, to);
   const reorderedItem = await cachedReorder(eventId, from, to);
 
   notifyChanges({ timer: true, external: true });
@@ -263,7 +274,7 @@ export async function applyDelay(eventId: string) {
  */
 export async function swapEvents(from: string, to: string) {
   await cachedSwap(from, to);
-
+  //TODO: add sheets functon but dont know how to test???
   notifyChanges({ timer: true, external: true });
 }
 

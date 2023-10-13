@@ -1,5 +1,5 @@
 import { initAssets, startIntegrations, startOSCServer, startServer } from './app.js';
-import { loadSheet } from './adapters/SheetsAdapter.js';
+import { loadSheet } from './utils/SheetsAdapter.js';
 async function startOntime() {
   try {
     console.log('Starting Ontime');
