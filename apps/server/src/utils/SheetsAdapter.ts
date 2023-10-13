@@ -3,10 +3,11 @@ import { google, sheets_v4, drive_v3 } from 'googleapis';
 import { getAppDataPath } from '../setup.js';
 import { authenticate } from '@google-cloud/local-auth';
 import { writeFile, readFile } from 'fs/promises';
-import { join } from 'path';
+import { join, resolve } from 'path';
 
-import { OntimeEvent } from 'ontime-types';
+import { LogOrigin, OntimeEvent } from 'ontime-types';
 import { logger } from '../classes/Logger.js';
+import { error } from 'console';
 // import { eventTimer } from '../services/TimerService.js';
 
 const SCOPES = [
@@ -81,22 +82,26 @@ export async function loadSheet() {
   auth = await authorize();
   sheets = await google.sheets({ version: 'v4', auth });
   drive = await google.drive({ version: 'v3', auth });
-  getChanges();
+  // getChanges();
   // listMajors(auth).catch(console.error);
 }
 
 export async function getChanges() {
-  const channel = await drive.files.watch({ 
-    fileId: SHEET_ID 
-  }, { responseType: 'stream' }).catch((err) => {
-    logger.error('SHEETS', `getChanges ${err}`);
-  });
+  const channel = await drive.files
+    .watch(
+      {
+        fileId: SHEET_ID,
+      },
+      { responseType: 'stream' },
+    )
+    .catch((err) => {
+      logger.error(LogOrigin.Server, `getChanges ${err}`);
+    });
 
   if (channel) {
     channel.data.on('data', (d) => {
       console.log(d);
-    })
-
+    });
   }
 }
 
@@ -121,32 +126,34 @@ export async function SheetAddEvent(event: Partial<OntimeEvent>, index: number) 
       },
     })
     .catch((err) => {
-      logger.error('SHEETS', `SheetAddEvent ${err}`);
+      logger.error(LogOrigin.Server, `SheetAddEvent ${err}`);
     });
 }
 
-export async function SheetDeleteEvent(index: number) {
-  sheets.spreadsheets
-    .batchUpdate({
-      spreadsheetId: SHEET_ID,
-      requestBody: {
-        requests: [
-          {
-            deleteDimension: {
-              range: {
-                sheetId: 0,
-                dimension: 'ROWS',
-                startIndex: offset + index,
-                endIndex: offset + index + 1,
+export async function SheetDeleteEvent(id: string, index: number) {
+  if ((await testId(id, index)) === true) {
+    sheets.spreadsheets
+      .batchUpdate({
+        spreadsheetId: SHEET_ID,
+        requestBody: {
+          requests: [
+            {
+              deleteDimension: {
+                range: {
+                  sheetId: 0,
+                  dimension: 'ROWS',
+                  startIndex: offset + index,
+                  endIndex: offset + index + 1,
+                },
               },
             },
-          },
-        ],
-      },
-    })
-    .catch((err) => {
-      logger.error('SHEETS', `SheetDeleteEvent ${err}`);
-    });
+          ],
+        },
+      })
+      .catch((err) => {
+        logger.error(LogOrigin.Server, `SheetDeleteEvent ${err}`);
+      });
+  }
 }
 
 export async function SheetDeleteAllEvents() {
@@ -179,47 +186,51 @@ export async function SheetDeleteAllEvents() {
       },
     })
     .catch((err) => {
-      logger.error('SHEETS', `SheetDeleteAllEvents ${err}`);
+      logger.error(LogOrigin.Server, `SheetDeleteAllEvents ${err}`);
     });
 }
 
-export async function SheetReorderEvent(from: number, to: number) {
+export async function SheetReorderEvent(id: string, from: number, to: number) {
   to = to > from ? to + 1 : to;
-  sheets.spreadsheets
-    .batchUpdate({
-      spreadsheetId: SHEET_ID,
-      requestBody: {
-        requests: [
-          {
-            moveDimension: {
-              source: {
-                sheetId: 0,
-                dimension: 'ROWS',
-                startIndex: offset + from,
-                endIndex: offset + from + 1,
+  if ((await testId(id, from)) === true) {
+    sheets.spreadsheets
+      .batchUpdate({
+        spreadsheetId: SHEET_ID,
+        requestBody: {
+          requests: [
+            {
+              moveDimension: {
+                source: {
+                  sheetId: 0,
+                  dimension: 'ROWS',
+                  startIndex: offset + from,
+                  endIndex: offset + from + 1,
+                },
+                destinationIndex: offset + to,
               },
-              destinationIndex: offset + to,
             },
-          },
-        ],
-      },
-    })
-    .catch((err) => {
-      logger.error('SHEETS', `SheetReorderEvent ${err}`);
-    });
+          ],
+        },
+      })
+      .catch((err) => {
+        logger.error(LogOrigin.Server, `SheetReorderEvent ${err}`);
+      });
+  }
 }
 
 export async function SheetEditEvent(event: Partial<OntimeEvent>, index: number) {
-  sheets.spreadsheets
-    .batchUpdate({
-      spreadsheetId: SHEET_ID,
-      requestBody: {
-        requests: [{ updateCells: cellRequenstFromEvent(event, index) }],
-      },
-    })
-    .catch((err) => {
-      logger.error('SHEETS', `SheetEditEvent ${err}`);
-    });
+  if ((await testId(event.id, index)) === true) {
+    sheets.spreadsheets
+      .batchUpdate({
+        spreadsheetId: SHEET_ID,
+        requestBody: {
+          requests: [{ updateCells: cellRequenstFromEvent(event, index) }],
+        },
+      })
+      .catch((err) => {
+        logger.error(LogOrigin.Server, `SheetEditEvent ${err}`);
+      });
+  }
 }
 
 function hexToRgb(hex: string) {
@@ -238,12 +249,13 @@ function cellRequenstFromEvent(event: Partial<OntimeEvent>, index: number): shee
     start: {
       sheetId: 0,
       rowIndex: offset + index,
-      columnIndex: 1,
+      columnIndex: 0,
     },
     fields: 'userEnteredValue,userEnteredFormat.backgroundColor',
     rows: [
       {
         values: [
+          { userEnteredValue: { stringValue: event.id } },
           { userEnteredValue: { numberValue: event.timeStart } },
           { userEnteredValue: { numberValue: event.timeEnd } },
           { userEnteredValue: { numberValue: event.duration } },
@@ -274,4 +286,22 @@ function cellRequenstFromEvent(event: Partial<OntimeEvent>, index: number): shee
       },
     ],
   };
+}
+
+async function testId(id: string, index: number) {
+  let r = false;
+  await sheets.spreadsheets.values
+    .get({
+      spreadsheetId: SHEET_ID,
+      range: 'A' + (offset + index + 1).toString() + ':X' + (offset + index + 1).toString(),
+    })
+    .then((res) => {
+      const value = res.data.values[0];
+      if (id !== value[0]) {
+        logger.error('SHEET', `The sheet is out off sync at least at ID: ${id}`);
+      } else {
+        r = true;
+      }
+    });
+  return r;
 }

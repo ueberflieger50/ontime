@@ -225,7 +225,7 @@ export async function editEvent(eventData: Partial<OntimeEvent> | Partial<Ontime
  */
 export async function deleteEvent(eventId) {
   const index = DataProvider.getIndexOf(eventId);
-  SheetDeleteEvent(index);
+  SheetDeleteEvent(eventId, index);
   await cachedDelete(eventId);
 
   notifyChanges({ timer: [eventId], external: true });
@@ -252,7 +252,7 @@ export async function deleteAllEvents() {
  * @returns {Promise<void>}
  */
 export async function reorderEvent(eventId: string, from: number, to: number) {
-  SheetReorderEvent(from, to);
+  SheetReorderEvent(eventId, from, to);
   const reorderedItem = await cachedReorder(eventId, from, to);
 
   notifyChanges({ timer: true, external: true });
