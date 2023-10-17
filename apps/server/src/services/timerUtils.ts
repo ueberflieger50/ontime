@@ -64,3 +64,13 @@ export function getCurrent(
   }
   return startedAt + duration + addedTime + pausedTime - clock;
 }
+
+/**
+ * Calculates over or under time
+ */
+export function getOverUnder(startedAt: MaybeNumber, duration: number, clock: number) {
+  if (startedAt === null) {
+    return null;
+  }
+  return clock - startedAt - duration;
+}

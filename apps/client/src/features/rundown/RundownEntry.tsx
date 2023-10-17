@@ -151,6 +151,7 @@ export default function RundownEntry(props: RundownEntryProps) {
   );
 
   if (data.type === SupportedEvent.Event) {
+    console.log(data.overUnder);
     return (
       <EventBlock
         cue={data.cue}
@@ -175,6 +176,9 @@ export default function RundownEntry(props: RundownEntryProps) {
         isRolling={isRolling}
         actionHandler={actionHandler}
         disableEdit={disableEdit}
+        overUnder={data.overUnder}
+        timeStartAt={data.timeStartAt}
+        timeEndAt={data.timeEndAt}
       />
     );
   } else if (data.type === SupportedEvent.Block) {

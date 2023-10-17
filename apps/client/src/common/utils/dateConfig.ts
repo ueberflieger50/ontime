@@ -188,7 +188,7 @@ export const forgivingStringToMillis = (value: string): number => {
   return millis;
 };
 
-export function millisToDelayString(millis: number | null): undefined | string | null {
+export function millisToDelayString(millis: number | null): string | null {
   if (millis == null || millis === 0) {
     return null;
   }
@@ -198,7 +198,7 @@ export function millisToDelayString(millis: number | null): undefined | string |
 
   if (absMillis < mtm) {
     return `${isNegative ? '-' : '+'}${formatFromMillis(absMillis, 's')} sec`;
-  } else if (absMillis < mth && absMillis % mtm === 0) {
+  } else if (absMillis < mth ) {
     return `${isNegative ? '-' : '+'}${formatFromMillis(absMillis, 'm')} min`;
   } else {
     return `${isNegative ? '-' : '+'}${formatFromMillis(absMillis, 'HH:mm:ss')}`;

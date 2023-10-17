@@ -25,6 +25,9 @@ export const event: Omit<OntimeEvent, 'id' | 'delay' | 'cue'> = {
   user9: '',
   type: SupportedEvent.Event,
   revision: 0,
+  overUnder: null,
+  timeStartAt: undefined,
+  timeEndAt: undefined,
 };
 
 export const delay: Omit<OntimeDelay, 'id'> = {

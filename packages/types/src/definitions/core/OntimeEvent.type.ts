@@ -51,4 +51,7 @@ export type OntimeEvent = OntimeBaseEvent & {
   user9: string;
   revision: number;
   delay?: number; // calculated at runtime
+  overUnder: number | null;
+  timeStartAt: number | null;
+  timeEndAt: number | null;
 };

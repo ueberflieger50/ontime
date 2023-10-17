@@ -50,6 +50,9 @@ interface EventBlockProps {
         },
   ) => void;
   disableEdit: boolean;
+  overUnder: number | null;
+  timeStartAt: number | null;
+  timeEndAt: number | null;
 }
 
 export default function EventBlock(props: EventBlockProps) {
@@ -76,6 +79,9 @@ export default function EventBlock(props: EventBlockProps) {
     isRolling,
     actionHandler,
     disableEdit,
+    overUnder,
+    timeStartAt,
+    timeEndAt,
   } = props;
   const { selectedEventId, setSelectedEventId, clearSelectedEventId } = useEventIdSwapping();
   const moveCursorTo = useAppMode((state) => state.setCursor);
@@ -210,6 +216,9 @@ export default function EventBlock(props: EventBlockProps) {
           isRolling={isRolling}
           actionHandler={actionHandler}
           disableEdit={disableEdit}
+          overUnder={overUnder}
+          timeStartAt={timeStartAt}
+          timeEndAt={timeEndAt}
         />
       )}
     </div>

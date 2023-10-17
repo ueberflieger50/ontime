@@ -53,6 +53,9 @@ interface EventBlockInnerProps {
   isRolling: boolean;
   actionHandler: (action: EventItemActions, payload?: any) => void;
   disableEdit: boolean;
+  overUnder: number | null;
+  timeStartAt: number | null;
+  timeEndAt: number | null;
 }
 
 const EventBlockInner = (props: EventBlockInnerProps) => {
@@ -76,6 +79,9 @@ const EventBlockInner = (props: EventBlockInnerProps) => {
     isRolling,
     actionHandler,
     disableEdit,
+    overUnder,
+    timeStartAt,
+    timeEndAt,
   } = props;
 
   const [renderInner, setRenderInner] = useState(false);
@@ -112,6 +118,9 @@ const EventBlockInner = (props: EventBlockInnerProps) => {
         duration={duration}
         delay={delay}
         previousEnd={previousEnd}
+        overUnder={overUnder}
+        timeStartAt={timeStartAt}
+        timeEndAt={timeEndAt}
       />
       <EditableBlockTitle title={title} eventId={eventId} placeholder='Event title' className={style.eventTitle} />
       {next && (

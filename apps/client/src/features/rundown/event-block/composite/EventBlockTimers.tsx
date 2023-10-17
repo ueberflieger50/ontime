@@ -16,12 +16,15 @@ interface EventBlockTimerProps {
   duration: number;
   delay: number;
   previousEnd: number;
+  overUnder: number | null;
+  timeStartAt: number | null;
+  timeEndAt: number | null;
 }
 
 type TimeActions = 'timeStart' | 'timeEnd' | 'durationOverride';
 
 const EventBlockTimers = (props: EventBlockTimerProps) => {
-  const { eventId, timeStart, timeEnd, duration, delay, previousEnd } = props;
+  const { eventId, timeStart, timeEnd, duration, delay, previousEnd, overUnder, timeStartAt, timeEndAt } = props;
   const { updateEvent } = useEventAction();
 
   const [warning, setWarnings] = useState({ start: '', end: '', duration: '' });
@@ -79,6 +82,7 @@ const EventBlockTimers = (props: EventBlockTimerProps) => {
         placeholder='Start'
         previousEnd={previousEnd}
         warning={warning.start}
+        note={millisToString(timeStartAt)}
       />
       <TimeInput
         name='timeEnd'
@@ -89,6 +93,7 @@ const EventBlockTimers = (props: EventBlockTimerProps) => {
         placeholder='End'
         previousEnd={previousEnd}
         warning={warning.end}
+        note={millisToString(timeEndAt)}
       />
       <TimeInput
         name='durationOverride'
@@ -99,6 +104,7 @@ const EventBlockTimers = (props: EventBlockTimerProps) => {
         placeholder='Duration'
         previousEnd={previousEnd}
         warning={warning.duration}
+        note={millisToDelayString(overUnder)}
       />
       {delayTime && (
         <div className={style.delayNote}>

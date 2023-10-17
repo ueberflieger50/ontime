@@ -20,6 +20,7 @@ interface TimeInputProps {
   validationHandler: (entry: TimeEntryField, val: number) => boolean;
   previousEnd?: number;
   warning?: string;
+  note?: string | null;
 }
 
 function ButtonInitial(name: TimeEntryField) {
@@ -47,6 +48,7 @@ export default function TimeInput(props: TimeInputProps) {
     validationHandler,
     previousEnd = 0,
     warning,
+    note,
   } = props;
   const { emitError } = useEmitLog();
   const inputRef = useRef<HTMLInputElement | null>(null);
@@ -182,6 +184,7 @@ export default function TimeInput(props: TimeInputProps) {
   }, [name]);
 
   return (
+    <div>
     <InputGroup size='sm' className={inputClasses}>
       <InputLeftElement className={style.inputLeft}>
         <Tooltip label={TooltipLabel} openDelay={tooltipDelayFast} variant='ontime-ondark'>
@@ -214,5 +217,9 @@ export default function TimeInput(props: TimeInputProps) {
         maxLength={8}
       />
     </InputGroup>
+    <div>
+    {note && (note)}
+    </div>
+    </div>
   );
 }

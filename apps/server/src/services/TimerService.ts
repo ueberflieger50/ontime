@@ -5,9 +5,10 @@ import { eventStore } from '../stores/EventStore.js';
 import { PlaybackService } from './PlaybackService.js';
 import { updateRoll } from './rollUtils.js';
 import { integrationService } from './integration-service/IntegrationService.js';
-import { getCurrent, getExpectedFinish } from './timerUtils.js';
+import { getCurrent, getExpectedFinish, getOverUnder } from './timerUtils.js';
 import { clock } from './Clock.js';
 import { logger } from '../classes/Logger.js';
+import { editEvent } from './rundown-service/RundownService.js';
 
 type initialLoadingData = {
   startedAt?: number | null;
@@ -62,6 +63,7 @@ export class TimerService {
       duration: null,
       timerType: null,
       endAction: null,
+      overUnder: null,
     };
     this.loadedTimerId = null;
     this.loadedTimerStart = null;
@@ -136,6 +138,14 @@ export class TimerService {
       throw new Error('Refuse load of skipped event');
     }
 
+    if (this.loadedTimerId !== null) {
+      editEvent({
+        id: this.loadedTimerId,
+        overUnder: getOverUnder(this.timer.startedAt, this.timer.duration, this.timer.clock),
+        timeEndAt: this.timer.clock
+      });
+    }
+
     this._clear();
 
     this.loadedTimerId = timer.id;
@@ -186,9 +196,11 @@ export class TimerService {
       return;
     }
 
+    
     this.timer.clock = clock.timeNow();
     this.timer.secondaryTimer = null;
     this.secondaryTarget = null;
+    editEvent({ id: this.loadedTimerId, overUnder: null, timeStartAt: this.timer.clock, timeEndAt: null });
 
     // add paused time if it exists
     if (this.pausedTime) {
@@ -243,7 +255,11 @@ export class TimerService {
     if (this.playback === Playback.Stop) {
       return;
     }
-
+    editEvent({
+      id: this.loadedTimerId,
+      overUnder: getOverUnder(this.timer.startedAt, this.timer.duration, this.timer.clock),
+      timeEndAt: this.timer.clock
+    });
     this._clear();
     this._onStop();
   }
@@ -344,6 +360,8 @@ export class TimerService {
       this.timer.timerType,
     );
     this.timer.elapsed = this.timer.duration - this.timer.current;
+    const ou = getOverUnder(this.timer.startedAt, this.timer.duration, this.timer.clock);
+    this.timer.overUnder = ou > 0 ? ou : null;
   }
 
   update(force = false) {
