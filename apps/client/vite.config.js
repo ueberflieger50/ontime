@@ -16,6 +16,7 @@ export default defineConfig({
     svgrPlugin(),
     !isLocal &&
       sentryVitePlugin({
+        disable: true,
         org: 'get-ontime',
         project: 'ontime',
         include: './build',

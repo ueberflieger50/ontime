@@ -97,11 +97,11 @@ export default function Editor() {
             <MessageControl />
             <TimerControl />
             <Info />
+            <EventEditor />
           </div>
         )}
         <Overview />
       </div>
-      <EventEditor />
     </>
   );
 }

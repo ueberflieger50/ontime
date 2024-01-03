@@ -11,9 +11,10 @@ import EventEditorDataRight from './composite/EventEditorDataRight';
 import EventEditorTimes from './composite/EventEditorTimes';
 
 import style from './EventEditor.module.scss';
+import EventEditorDataUser from './composite/EventEditorDataUser';
 
 export type EventEditorSubmitActions = keyof OntimeEvent;
-export type EditorUpdateFields = 'cue' | 'title' | 'presenter' | 'subtitle' | 'note' | 'colour';
+export type EditorUpdateFields = 'cue' | 'title' | 'presenter' | 'subtitle' | 'note' | 'colour' | 'user';
 
 export default function EventEditor() {
   const openId = useAppMode((state) => state.editId);
@@ -21,6 +22,7 @@ export default function EventEditor() {
   const { updateEvent } = useEventAction();
 
   const [event, setEvent] = useState<OntimeEvent | null>(null);
+  console.log(event);
 
   useEffect(() => {
     if (!data || !openId) {
@@ -73,11 +75,12 @@ export default function EventEditor() {
         note={event.note}
         colour={event.colour}
         handleSubmit={handleSubmit}
-      >
+      />
+      <EventEditorDataUser key={`${event.id}-users`} event={event} handleSubmit={handleSubmit}>
         <CopyTag label='Event ID'>{event.id}</CopyTag>
         <CopyTag label='OSC trigger by id'>{`/ontime/gotoid "${event.id}"`}</CopyTag>
         <CopyTag label='OSC trigger by cue'>{`/ontime/gotocue "${event.cue}"`}</CopyTag>
-      </EventEditorDataRight>
+      </EventEditorDataUser>
     </div>
   );
 }

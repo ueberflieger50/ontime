@@ -22,14 +22,6 @@ const EventEditorExport = () => {
       <ErrorBoundary>
         <div className={style.eventEditorLayout}>
           <EventEditor />
-          <div className={style.header}>
-            <IconButton
-              aria-label='Close Menu'
-              icon={<IoClose />}
-              onClick={removeOpenEvent}
-              variant='ontime-ghosted-white'
-            />
-          </div>
         </div>
       </ErrorBoundary>
     </div>

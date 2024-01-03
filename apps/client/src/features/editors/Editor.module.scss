@@ -31,11 +31,11 @@ $playback-width: 26rem;
   height: 100%;
   color: $ui-white;
   padding: 1rem 0.5rem;
-  
+
   display: grid;
   grid-template-columns: $menu-width auto;
   grid-template-rows: 3rem 1fr;
-  grid-template-areas: 
+  grid-template-areas:
     'menu overview'
     'menu main';
   gap: 0.5rem;
@@ -46,10 +46,10 @@ $playback-width: 26rem;
 
   display: grid;
   grid-template-rows: auto 1fr;
-  grid-template-columns: $rundown-width $playback-width 1fr;
+  grid-template-columns: $rundown-width $playback-width 1fr 1fr;
   grid-template-areas:
-    'rundown play info'
-    'rundown mess info';
+    'rundown play info editor'
+    'rundown mess info editor';
   gap: 0.5rem;
   overflow: hidden;
 
