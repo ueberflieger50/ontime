@@ -1,22 +1,16 @@
-import { TimeFormat, UserFields } from 'ontime-types';
+import { UserFields } from 'ontime-types';
 
 import { ParamField } from './types';
 
-const getTimeOption = (timeFormat: TimeFormat): ParamField => ({
-  id: 'format',
-  title: '12  / 24 hour timer',
-  description: 'Whether to show the time in 12 or 24 hour mode. Overrides the global setting from preferences',
-  type: 'option',
-  values: { '12': '12 hour AM/PM', '24': '24 hour' },
-  defaultValue: timeFormat,
-});
-
-const hideClockSeconds: ParamField = {
-  id: 'hideClockSeconds',
-  title: 'Hide seconds in clocks',
-  description: 'Whether to hide seconds in auxiliar time fields (not the running timer)',
-  type: 'boolean',
-  defaultValue: false,
+const getTimeOption = (timeFormat: string): ParamField => {
+  const placeholder = `${timeFormat} (default)`;
+  return {
+    id: 'timeformat',
+    title: 'Time format string, taken from the Application Settings',
+    description: 'Format for auxiliar time fields (not the running), eg. HH:mm:ss or hh:mm:ss a, see docs for help',
+    type: 'string',
+    placeholder,
+  };
 };
 
 const hideTimerSeconds: ParamField = {
@@ -27,7 +21,7 @@ const hideTimerSeconds: ParamField = {
   defaultValue: false,
 };
 
-export const getClockOptions = (timeFormat: TimeFormat): ParamField[] => [
+export const getClockOptions = (timeFormat: string): ParamField[] => [
   getTimeOption(timeFormat),
   {
     id: 'key',
@@ -99,10 +93,9 @@ export const getClockOptions = (timeFormat: TimeFormat): ParamField[] => [
   },
 ];
 
-export const getTimerOptions = (timeFormat: TimeFormat): ParamField[] => [
+export const getTimerOptions = (timeFormat: string): ParamField[] => [
   getTimeOption(timeFormat),
   hideTimerSeconds,
-  hideClockSeconds,
   {
     id: 'hideClock',
     title: 'Hide Time Now',
@@ -233,13 +226,97 @@ export const MINIMAL_TIMER_OPTIONS: ParamField[] = [
   },
 ];
 
-export const LOWER_THIRDS_OPTIONS: ParamField[] = [
+export const LOWER_THIRD_OPTIONS: ParamField[] = [
   {
-    id: 'size',
-    title: 'Size',
-    description: 'Scales the current style (0.5 = 50% 1 = 100% 2 = 200%)',
+    id: 'trigger',
+    title: 'Animation Trigger',
+    description: '',
+    type: 'option',
+    values: {
+      event: 'Event Load',
+      manual: 'Manual',
+    },
+    defaultValue: 'event',
+  },
+  {
+    id: 'top-src',
+    title: 'Top Text',
+    description: '',
+    type: 'option',
+    values: {
+      title: 'Title',
+      subtitle: 'Subtitle',
+      presenter: 'Presenter',
+      lowerMsg: 'Lower Thrid Message',
+    },
+    defaultValue: 'title',
+  },
+  {
+    id: 'bottom-src',
+    title: 'Bottom Text',
+    description: 'Select the text source for the bottom element',
+    type: 'option',
+    values: {
+      title: 'Title',
+      subtitle: 'Subtitle',
+      presenter: 'Presenter',
+      lowerMsg: 'Lower Thrid Message',
+    },
+    defaultValue: 'subtitle',
+  },
+  {
+    id: 'top-colour',
+    title: 'Top Text Colour',
+    description: 'Top text colour in hexadecimal',
+    prefix: '#',
+    type: 'string',
+    placeholder: '0000ff (default)',
+  },
+  {
+    id: 'bottom-colour',
+    title: 'Bottom Text Colour',
+    description: 'Bottom text colour in hexadecimal',
+    prefix: '#',
+    type: 'string',
+    placeholder: '0000ff (default)',
+  },
+  {
+    id: 'top-bg',
+    title: 'Top Background Colour',
+    description: 'Top text background colour in hexadecimal',
+    prefix: '#',
+    type: 'string',
+    placeholder: '00000000 (default)',
+  },
+  {
+    id: 'bottom-bg',
+    title: 'Bottom Background Colour',
+    description: 'Bottom text background colour in hexadecimal',
+    prefix: '#',
+    type: 'string',
+    placeholder: '00000000 (default)',
+  },
+  {
+    id: 'top-size',
+    title: 'Top Text Size',
+    description: 'Font size of the top text',
+    type: 'string',
+    placeholder: '65px',
+  },
+  {
+    id: 'bottom-size',
+    title: 'Bottom Text Size',
+    description: 'Font size of the bottom text',
+    type: 'string',
+    placeholder: '64px',
+  },
+  {
+    id: 'width',
+    title: 'Minimum Width',
+    description: 'Minimum Width of the element',
     type: 'number',
-    placeholder: '1 (default)',
+    prefix: '%',
+    placeholder: '45 (default)',
   },
   {
     id: 'transition',
@@ -249,41 +326,32 @@ export const LOWER_THIRDS_OPTIONS: ParamField[] = [
     placeholder: '3 (default)',
   },
   {
-    id: 'text',
-    title: 'Text Colour',
-    description: 'Text colour in hexadecimal',
-    prefix: '#',
-    type: 'string',
-    placeholder: 'fffffa (default)',
-  },
-  {
-    id: 'bg',
-    title: 'Text Background',
-    description: 'Text background colour in hexadecimal',
-    prefix: '#',
-    type: 'string',
-    placeholder: '00000033 (default)',
+    id: 'delay',
+    title: 'Delay',
+    description: 'Delay between transition in and out in seconds (default 3)',
+    type: 'number',
+    placeholder: '3 (default)',
   },
   {
     id: 'key',
     title: 'Key Colour',
-    description: 'Screen background colour in hexadecimal',
+    description: 'Colour of the background',
     prefix: '#',
     type: 'string',
-    placeholder: '00000033 (default)',
+    placeholder: 'ffffffff (default)',
   },
   {
-    id: 'fadeout',
-    title: 'Fadeout',
-    description: 'Time (in seconds) the lower third displays before fading out',
-    type: 'number',
-    placeholder: '3 (default)',
+    id: 'line-colour',
+    title: 'Line Colour',
+    description: 'Colour of the line',
+    prefix: '#',
+    type: 'string',
+    placeholder: 'ff0000ff (default)',
   },
 ];
 
-export const getBackstageOptions = (timeFormat: TimeFormat): ParamField[] => [
+export const getBackstageOptions = (timeFormat: string): ParamField[] => [
   getTimeOption(timeFormat),
-  hideClockSeconds,
   {
     id: 'hidePast',
     title: 'Hide past events',
@@ -307,9 +375,8 @@ export const getBackstageOptions = (timeFormat: TimeFormat): ParamField[] => [
   },
 ];
 
-export const getPublicOptions = (timeFormat: TimeFormat): ParamField[] => [
+export const getPublicOptions = (timeFormat: string): ParamField[] => [
   getTimeOption(timeFormat),
-  hideClockSeconds,
   {
     id: 'hidePast',
     title: 'Hide past events',
@@ -332,28 +399,14 @@ export const getPublicOptions = (timeFormat: TimeFormat): ParamField[] => [
     placeholder: '7 (default)',
   },
 ];
-export const getStudioClockOptions = (timeFormat: TimeFormat): ParamField[] => [
+export const getStudioClockOptions = (timeFormat: string): ParamField[] => [
   getTimeOption(timeFormat),
-  hideClockSeconds,
-  {
-    id: 'seconds',
-    title: 'Show Seconds',
-    description: 'Shows seconds in clock',
-    type: 'boolean',
-    defaultValue: false,
-  },
+  hideTimerSeconds,
 ];
 
-export const getOperatorOptions = (userFields: UserFields, timeFormat: TimeFormat): ParamField[] => {
+export const getOperatorOptions = (userFields: UserFields, timeFormat: string): ParamField[] => {
   return [
     getTimeOption(timeFormat),
-    {
-      id: 'showseconds',
-      title: 'Show seconds',
-      description: 'Schedule shows hh:mm:ss',
-      type: 'boolean',
-      defaultValue: false,
-    },
     {
       id: 'hidepast',
       title: 'Hide Past Events',
@@ -411,8 +464,4 @@ export const getOperatorOptions = (userFields: UserFields, timeFormat: TimeForma
   ];
 };
 
-export const getCountdownOptions = (timeFormat: TimeFormat): ParamField[] => [
-  getTimeOption(timeFormat),
-  hideTimerSeconds,
-  hideClockSeconds,
-];
+export const getCountdownOptions = (timeFormat: string): ParamField[] => [getTimeOption(timeFormat), hideTimerSeconds];
