@@ -96,8 +96,8 @@ export default function Editor() {
             <Rundown />
             <MessageControl />
             <TimerControl />
-            <Info />
             <EventEditor />
+            <Info />
           </div>
         )}
         <Overview />

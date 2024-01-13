@@ -46,10 +46,10 @@ $playback-width: 26rem;
 
   display: grid;
   grid-template-rows: auto 1fr;
-  grid-template-columns: $rundown-width $playback-width 1fr 1fr;
+  grid-template-columns: $rundown-width $playback-width auto 1fr;
   grid-template-areas:
-    'rundown play info editor'
-    'rundown mess info editor';
+    'rundown play editor info'
+    'rundown mess editor info';
   gap: 0.5rem;
   overflow: hidden;
 

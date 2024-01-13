@@ -44,7 +44,7 @@ export default function EventEditor() {
   );
 
   if (!event) {
-    return <span>Loading...</span>;
+    return <span className={style.noEvent}>No event to Edit selected</span>;
   }
 
   return (

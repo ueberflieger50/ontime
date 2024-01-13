@@ -8,19 +8,16 @@
   color: white;
   overflow-y: scroll;
 
-  &.noEvent {
-    margin: 1rem auto;
-  }
-
   .eventEditorLayout {
-    display: flex;
+    display: grid;
+    grid-auto-flow: row;
+    // flex-direction: column-reverse;
   }
 
   .header {
-    background-color: $gray-1250;
-    padding: 0.5rem;
-    border-left: 1px solid $white-10;
-    border-radius: 0 8px 0 0;
+    justify-self: flex-end;
+    order: -1;
+    height: 0px;
   }
 }
 
@@ -31,6 +28,18 @@
   display: grid;
   grid-template-areas: 'time' 'left' 'right';
   grid-template-rows: auto 1fr 1fr;
+}
+
+.noEvent {
+  text-orientation: sideways;
+  writing-mode: vertical-rl;
+  padding: $main-spacing auto;
+  color: $bg-container-onlight;
+  font-variant: all-small-caps;
+
+  & .eventEditorLayout {
+    justify-content: center;
+  }
 }
 
 .timeOptions {

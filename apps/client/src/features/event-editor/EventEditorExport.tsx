@@ -17,11 +17,27 @@ const EventEditorExport = () => {
   const editorStyle = cx([style.eventEditorContainer, !editId ? style.noEvent : null]);
   const removeOpenEvent = () => setEditId(null);
 
+  const showClose = () => {
+    if (editId) {
+      return (
+        <div className={style.header}>
+          <IconButton
+            aria-label='Close Menu'
+            icon={<IoClose />}
+            onClick={removeOpenEvent}
+            variant='ontime-ghosted-white'
+          />
+        </div>
+      );
+    }
+  };
+
   return (
     <div className={editorStyle}>
       <ErrorBoundary>
         <div className={style.eventEditorLayout}>
           <EventEditor />
+          {showClose()}
         </div>
       </ErrorBoundary>
     </div>
