@@ -4,7 +4,7 @@ import { isOntimeEvent, OntimeEvent } from 'ontime-types';
 import CopyTag from '../../common/components/copy-tag/CopyTag';
 import { useEventAction } from '../../common/hooks/useEventAction';
 import useRundown from '../../common/hooks-query/useRundown';
-import { useAppMode } from '../../common/stores/appModeStore';
+import { useEventSelection } from '../../features/rundown/useEventSelection';
 
 import EventEditorDataLeft from './composite/EventEditorDataLeft';
 import EventEditorDataRight from './composite/EventEditorDataRight';
@@ -17,7 +17,7 @@ export type EventEditorSubmitActions = keyof OntimeEvent;
 export type EditorUpdateFields = 'cue' | 'title' | 'presenter' | 'subtitle' | 'note' | 'colour' | 'user';
 
 export default function EventEditor() {
-  const openId = useAppMode((state) => state.editId);
+  const selectedEvents = useEventSelection((state) => state.selectedEvents);
   const { data } = useRundown();
   const { updateEvent } = useEventAction();
 
@@ -25,16 +25,17 @@ export default function EventEditor() {
   console.log(event);
 
   useEffect(() => {
-    if (!data || !openId) {
+    if (!data) {
       setEvent(null);
       return;
     }
 
-    const event = data.find((event) => event.id === openId);
+    const event = data.find((event) => selectedEvents.has(event.id));
+
     if (event && isOntimeEvent(event)) {
       setEvent(event);
     }
-  }, [data, openId]);
+  }, [data, selectedEvents]);
 
   const handleSubmit = useCallback(
     (field: EditorUpdateFields, value: string) => {
