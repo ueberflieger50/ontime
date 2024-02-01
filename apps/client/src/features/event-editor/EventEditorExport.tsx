@@ -21,18 +21,16 @@ const EventEditorExport = () => {
   const removeOpenEvent = () => clearSelectedEvents();
 
   const showClose = () => {
-    if (editId) {
-      return (
-        <div className={style.header}>
-          <IconButton
-            aria-label='Close Menu'
-            icon={<IoClose />}
-            onClick={removeOpenEvent}
-            variant='ontime-ghosted-white'
-          />
-        </div>
-      );
-    }
+    return (
+      <div className={style.header}>
+        <IconButton
+          aria-label='Close Menu'
+          icon={<IoClose />}
+          onClick={removeOpenEvent}
+          variant='ontime-ghosted-white'
+        />
+      </div>
+    );
   };
 
   return (
