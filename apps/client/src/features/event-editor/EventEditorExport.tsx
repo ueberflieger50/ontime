@@ -18,27 +18,12 @@ const EventEditorExport = () => {
     style.eventEditorContainer,
     selectedEvents.size > 1 || selectedEvents.size === 0 || mode === AppMode.Run ? style.noEvent : null,
   ]);
-  const removeOpenEvent = () => clearSelectedEvents();
-
-  const showClose = () => {
-    return (
-      <div className={style.header}>
-        <IconButton
-          aria-label='Close Menu'
-          icon={<IoClose />}
-          onClick={removeOpenEvent}
-          variant='ontime-ghosted-white'
-        />
-      </div>
-    );
-  };
 
   return (
     <div className={editorStyle}>
       <ErrorBoundary>
         <div className={style.eventEditorLayout}>
           <EventEditor />
-          {showClose()}
         </div>
       </ErrorBoundary>
     </div>

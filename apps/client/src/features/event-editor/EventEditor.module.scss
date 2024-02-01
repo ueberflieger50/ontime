@@ -30,18 +30,6 @@
   grid-template-rows: auto 1fr 1fr;
 }
 
-.noEvent {
-  text-orientation: sideways;
-  writing-mode: vertical-rl;
-  padding: $main-spacing auto;
-  color: $bg-container-onlight;
-  font-variant: all-small-caps;
-
-  & .eventEditorLayout {
-    justify-content: center;
-  }
-}
-
 .timeOptions {
   grid-area: time;
   display: flex;

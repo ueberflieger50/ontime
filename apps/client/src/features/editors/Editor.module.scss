@@ -2,7 +2,7 @@
 @use '../../theme/v2Styles' as *;
 
 $menu-width: 2.75rem;
-$rundown-width: 44.5rem;
+$rundown-width: 52rem;
 $playback-width: 26rem;
 
 @mixin absolute-top-right($distance) {
@@ -46,10 +46,10 @@ $playback-width: 26rem;
 
   display: grid;
   grid-template-rows: auto 1fr;
-  grid-template-columns: $rundown-width $playback-width auto 1fr;
+  grid-template-columns: $playback-width $rundown-width auto;
   grid-template-areas:
-    'rundown play editor info'
-    'rundown mess editor info';
+    'play rundown editor'
+    'mess rundown editor';
   gap: 0.5rem;
   overflow: hidden;
 
